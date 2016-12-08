@@ -13,9 +13,8 @@ Options:
 
 ################################### Imports ###################################
 from docopt import docopt
-from collections import defaultdict
 import numpy as np
-import sys, pickle, random
+import random
 
 ################################## Functions ##################################
 
@@ -24,4 +23,11 @@ import sys, pickle, random
 ##################################### Main ####################################
 # Import user input
 arguments = docopt(__doc__)
-print("Hello world.")
+DATA_FILE_NAME = "/home/koala/Documents/Scripts/KNN/KNN/glass.data"
+
+# Load data
+data_file = open(DATA_FILE_NAME)
+data = data_file.readlines()
+data = np.array([line[:-1].split(",") for line in data], dtype=np.float64)
+
+print(data)
