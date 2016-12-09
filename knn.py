@@ -3,10 +3,11 @@
 ##################################### Help ####################################
 """Simple KNN implementation
 Usage:
-  knn.py [options]
+  knn.py
+  knn.py -n
   knn.py --help
 Options:
-  -a                          Additional option
+  -n                          Normalize each column
   -h --help                   Show this screen.
 """
 
@@ -41,6 +42,7 @@ random.seed(1)
 arguments = docopt(__doc__)
 DATA_FILE_NAME = "/home/koala/Documents/Scripts/KNN/KNN/glass.data"
 NB_CROSSVAL = 10
+NORM = arguments["-n"]
 
 # Load data
 data_file = open(DATA_FILE_NAME)
@@ -51,15 +53,22 @@ neworder = range(len(data))
 random.shuffle(neworder)
 data = data[neworder,:]
 
+# Normalize the data if needed
+if NORM:
+	for i in xrange(1,10):
+		data[:,i] = (data[:,i] - np.mean(data[:,i]))/np.sqrt(np.var(data[:,1]))
+
 print(data)
 
 meanSSE = []
+meanAccuracy = []
 # Number of neighbors considered
-for K in xrange(1,11):
+for K in xrange(1,26):
 	# Ten cross validation
 	training_length = len(data)/NB_CROSSVAL
 	KNNs = []
 	SSE = []
+	accuracy = []
 	for i in xrange(NB_CROSSVAL):
 		test_indices = range(training_length*i, training_length*(i+1))
 		training_indices = [k for k in range(len(data)) if k not in test_indices]
@@ -67,5 +76,8 @@ for K in xrange(1,11):
 		predictions = np.array([KNNs[i].predict(j) for j in test_indices])
 		expected = np.array([data[j,10] for j in test_indices])
 		SSE.append(sum((predictions - expected)**2))
+		accuracy.append(sum(predictions == expected)/float(len(test_indices)))
 	meanSSE.append(sum(SSE)/NB_CROSSVAL)
+	meanAccuracy.append(sum(accuracy)/NB_CROSSVAL)
 print meanSSE
+print meanAccuracy
