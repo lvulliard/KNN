@@ -24,12 +24,15 @@ class KNN:
 	
 	def __init__(self, pts):
 		self.points = pts
-
+	
 	def predict(self, pt):
 		dist = np.array([np.linalg.norm(data[refPoint,1:10] - data[pt,1:10]) for refPoint in self.points])
-		return dist
-
-
+		dist_sort = dist.argsort()
+		points = [self.points[i] for i in dist_sort[:K]]
+		print dist
+		print dist_sort
+		print points
+		
 
 
 ##################################### Main ####################################
