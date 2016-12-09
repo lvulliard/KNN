@@ -41,7 +41,6 @@ random.seed(1)
 arguments = docopt(__doc__)
 DATA_FILE_NAME = "/home/koala/Documents/Scripts/KNN/KNN/glass.data"
 NB_CROSSVAL = 10
-K = 3
 
 # Load data
 data_file = open(DATA_FILE_NAME)
@@ -54,16 +53,19 @@ data = data[neworder,:]
 
 print(data)
 
-# Ten cross validation
-training_length = len(data)/NB_CROSSVAL
-KNNs = []
-SSE = []
-for i in xrange(NB_CROSSVAL):
-	test_indices = range(training_length*i, training_length*(i+1))
-	training_indices = [k for k in range(len(data)) if k not in test_indices]
-	KNNs.append(KNN(training_indices))
-	predictions = np.array([KNNs[i].predict(j) for j in test_indices])
-	expected = np.array([data[j,10] for j in test_indices])
-	SSE.append(sum((predictions - expected)**2))
-
-print SSE
+meanSSE = []
+# Number of neighbors considered
+for K in xrange(1,11):
+	# Ten cross validation
+	training_length = len(data)/NB_CROSSVAL
+	KNNs = []
+	SSE = []
+	for i in xrange(NB_CROSSVAL):
+		test_indices = range(training_length*i, training_length*(i+1))
+		training_indices = [k for k in range(len(data)) if k not in test_indices]
+		KNNs.append(KNN(training_indices))
+		predictions = np.array([KNNs[i].predict(j) for j in test_indices])
+		expected = np.array([data[j,10] for j in test_indices])
+		SSE.append(sum((predictions - expected)**2))
+	meanSSE.append(sum(SSE)/NB_CROSSVAL)
+print meanSSE
