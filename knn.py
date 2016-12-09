@@ -16,6 +16,7 @@ Options:
 from docopt import docopt
 import numpy as np
 import random
+import matplotlib.pyplot as plt
 
 ################################## Functions ##################################
 
@@ -81,3 +82,11 @@ for K in xrange(1,26):
 	meanAccuracy.append(sum(accuracy)/NB_CROSSVAL)
 print meanSSE
 print meanAccuracy
+plt.plot(range(1,26), meanSSE)
+plt.xlabel('K')
+plt.ylabel('Mean SSE')
+plt.show()
+plt.plot(range(1,26), meanAccuracy)
+plt.xlabel('K')
+plt.ylabel('Mean perfect accuracy')
+plt.show()
