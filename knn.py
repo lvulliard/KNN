@@ -24,14 +24,12 @@ class KNN:
 	
 	def __init__(self, pts):
 		self.points = pts
-	
+
 	def predict(self, pt):
 		dist = np.array([np.linalg.norm(data[refPoint,1:10] - data[pt,1:10]) for refPoint in self.points])
 		dist_sort = dist.argsort()
-		points = [self.points[i] for i in dist_sort[:K]]
-		print dist
-		print dist_sort
-		print points
+		nearest_points = [self.points[i] for i in dist_sort[:K]]
+		return sum(data[nearest_points,10])/K
 		
 
 
@@ -59,9 +57,13 @@ print(data)
 # Ten cross validation
 training_length = len(data)/NB_CROSSVAL
 KNNs = []
+SSE = []
 for i in xrange(NB_CROSSVAL):
 	test_indices = range(training_length*i, training_length*(i+1))
 	training_indices = [k for k in range(len(data)) if k not in test_indices]
-	print(training_indices)
-	print(test_indices)
 	KNNs.append(KNN(training_indices))
+	predictions = np.array([KNNs[i].predict(j) for j in test_indices])
+	expected = np.array([data[j,10] for j in test_indices])
+	SSE.append(sum((predictions - expected)**2))
+
+print SSE
